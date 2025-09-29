@@ -1,15 +1,39 @@
 # Stores REST API
 
-A simple RESTful API for managing stores and items, built with Python Flask.
+A RESTful API for managing stores and items, built with Python Flask, Flask-Smorest, SQLAlchemy, and Marshmallow.
 
 ## Features
 
-- Create, retrieve, update, and delete stores
-- Create, retrieve, update, and delete items
-- Data validation with Marshmallow schemas
+- CRUD operations for stores and items
+- Data validation using Marshmallow schemas
+- SQLAlchemy ORM for database management
 - Interactive API documentation via Swagger UI
+- Docker support for easy deployment
 
 ## Project Structure
+
+```
+.
+├── app.py                # Main Flask app factory
+├── db.py                 # SQLAlchemy database instance
+├── models/               # SQLAlchemy models
+│   ├── __init__.py
+│   ├── item.py
+│   └── store.py
+├── resources/            # API endpoints (blueprints)
+│   ├── item.py
+│   └── store.py
+├── schemas.py            # Marshmallow schemas
+├── requirements.txt      # Python dependencies
+├── Dockerfile            # Docker image definition
+├── docker-compose.yml    # Docker Compose config
+├── .flaskenv             # Flask environment variables
+├── instance/
+│   └── data.db           # SQLite database file
+├── README.md             # Project documentation
+└── .vscode/
+    └── settings.json
+```
 
 ## Getting Started
 
@@ -54,10 +78,33 @@ Once running, visit [http://localhost:5000/swagger-ui](http://localhost:5000/swa
 
 - `GET /store` — List all stores
 - `POST /store` — Create a new store
+- `GET /store/<store_id>` — Get a store by ID
+- `DELETE /store/<store_id>` — Delete a store by ID
 - `GET /item` — List all items
 - `POST /item` — Create a new item
-- `GET /store/<store_id>` — Get a store by ID
+- `GET /item/<item_id>` — Get an item by ID
+- `PUT /item/<item_id>` — Update an item by ID
 - `DELETE /item/<item_id>` — Delete an item by ID
+
+## Example Payloads
+
+**Create Item**
+
+```json
+{
+  "name": "New Item",
+  "price": 101,
+  "store_id": 1
+}
+```
+
+**Create Store**
+
+```json
+{
+  "name": "New Store"
+}
+```
 
 ## Contributing
 
