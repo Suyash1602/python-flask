@@ -12,25 +12,31 @@ from schemas import StoreSchema
 
 blp = Blueprint("Stores",__name__,description="Operations on stores")
 
+# API for single store operations (GET, DELETE)
 @blp.route("/store/<string:store_id>")
 class Store(MethodView):
+    # Retrieve a store by its ID
     @blp.response(200,StoreSchema)
     def get(self,store_id):
         store = StoreModel.query.get_or_404(store_id)
         return store
 
+    # Delete a store by its ID
     def delete(self,store_id):
         store = StoreModel.query.get_or_404(store_id)
         db.session.delete(store)
         db.session.commit()
         return {"message":"Store deleted."}
         
+# API for store collection operations (GET all, POST new)
 @blp.route("/store")
 class StoreList(MethodView):
+    # Retrieve all stores
     @blp.response(200,StoreSchema(many=True))
     def get(self):
         return StoreModel.query.all()
     
+    # Create a new store
     @blp.arguments(StoreSchema)
     @blp.response(201,StoreSchema)
     def post(self,store_data):

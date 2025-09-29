@@ -11,19 +11,23 @@ from schemas import ItemSchema,ItemUpdateSchema
 
 blp = Blueprint("Items",__name__,description="Operations on items")
 
+# API for single item operations (GET, DELETE, PUT)
 @blp.route("/item/<string:item_id>")
 class Item(MethodView):
+    # Retrieve an item by its ID
     @blp.response(200,ItemSchema)
     def get(self,item_id):
         item = ItemModel.query.get_or_404(item_id)
         return item
 
+    # Delete an item by its ID
     def delete(self,item_id):
         item = ItemModel.query.get_or_404(item_id)
         db.session.delete(item)
         db.session.commit()
         return {"message":"Item deleted."}
 
+    # Update an item by its ID
     @blp.arguments(ItemUpdateSchema)  
     @blp.response(200,ItemSchema)
     def put(self,item_data,item_id):
@@ -41,13 +45,15 @@ class Item(MethodView):
         return item
 
 
-
+# API for item collection operations (GET all, POST new)
 @blp.route("/item")
 class ItemList(MethodView):
+    # Retrieve all items
     @blp.response(200,ItemSchema(many=True))
     def get(self):
         return ItemModel.query.all()
 
+    # Create a new item
     @blp.arguments(ItemSchema)
     @blp.response(201, ItemSchema)
     def post(self, item_data):

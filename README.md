@@ -9,6 +9,7 @@ A RESTful API for managing stores and items, built with Python Flask, Flask-Smor
 - SQLAlchemy ORM for database management
 - Interactive API documentation via Swagger UI
 - Docker support for easy deployment
+- Well-commented API endpoints for maintainability
 
 ## Project Structure
 
@@ -21,8 +22,8 @@ A RESTful API for managing stores and items, built with Python Flask, Flask-Smor
 │   ├── item.py
 │   └── store.py
 ├── resources/            # API endpoints (blueprints)
-│   ├── item.py
-│   └── store.py
+│   ├── item.py           # Item APIs (fully commented)
+│   └── store.py          # Store APIs (fully commented)
 ├── schemas.py            # Marshmallow schemas
 ├── requirements.txt      # Python dependencies
 ├── Dockerfile            # Docker image definition
@@ -105,6 +106,10 @@ Once running, visit [http://localhost:5000/swagger-ui](http://localhost:5000/swa
   "name": "New Store"
 }
 ```
+
+## Code Documentation
+
+All API endpoints in [`resources/item.py`](resources/item.py) and [`resources/store.py`](resources/store.py) are now fully commented to explain their purpose and usage, making the codebase easier to understand and maintain.
 
 ## Contributing
 
