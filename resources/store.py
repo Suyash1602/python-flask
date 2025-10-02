@@ -13,7 +13,7 @@ from schemas import StoreSchema
 blp = Blueprint("Stores",__name__,description="Operations on stores")
 
 # API for single store operations (GET, DELETE)
-@blp.route("/store/<string:store_id>")
+@blp.route("/store/<int:store_id>")
 class Store(MethodView):
     # Retrieve a store by its ID
     @blp.response(200,StoreSchema)

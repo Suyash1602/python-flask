@@ -12,7 +12,7 @@ from schemas import ItemSchema,ItemUpdateSchema
 blp = Blueprint("Items",__name__,description="Operations on items")
 
 # API for single item operations (GET, DELETE, PUT)
-@blp.route("/item/<string:item_id>")
+@blp.route("/item/<int:item_id>")
 class Item(MethodView):
     # Retrieve an item by its ID
     @blp.response(200,ItemSchema)
