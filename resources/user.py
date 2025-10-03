@@ -8,10 +8,13 @@ from blocklist import BLOCKLIST
 from models import UserModel
 from schemas import UserSchema
 
+# Blueprint for user-related operations
 blp = Blueprint("Users", __name__, description="Operations on users")
 
+# Route for user registration
 @blp.route("/register")
 class UserRegister(MethodView):
+    # Register a new user
     @blp.arguments(UserSchema)
     def post(self,user_data):
         if UserModel.query.filter(UserModel.username == user_data["username"]).first():
@@ -26,8 +29,10 @@ class UserRegister(MethodView):
 
         return {"message": "User created successfully."}, 201
     
+# Route for user login
 @blp.route("/login")
 class UserLogin(MethodView):
+    # Login and get JWT token
     @blp.arguments(UserSchema)
     def post(self,user_data):
         user = UserModel.query.filter(
@@ -40,21 +45,26 @@ class UserLogin(MethodView):
         
         abort(401, message="Invalid credentials.")
 
+# Route for user logout
 @blp.route("/logout")
 class UserLogout(MethodView):
+    # Logout and revoke JWT token
     @jwt_required()
     def post(self):
         jti = get_jwt()["jti"]  # JWT ID, a unique identifier for a JWT.
         BLOCKLIST.add(jti)
         return {"message": "Successfully logged out"}, 200
     
+# Routes for single user operations
 @blp.route("/user/<int:user_id>")
 class User(MethodView):
+    # Get a user by ID
     @blp.response(200, UserSchema)
     def get(self, user_id):
         user = UserModel.query.get_or_404(user_id)
         return user
     
+    # Delete a user by ID
     def delete(self,user_id):
         user = UserModel.query.get_or_404(user_id)
         db.session.delete(user)

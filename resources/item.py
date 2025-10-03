@@ -7,20 +7,20 @@ from db import db
 from models import ItemModel
 from schemas import ItemSchema,ItemUpdateSchema
 
-
+# Blueprint for item-related operations
 blp = Blueprint("Items",__name__,description="Operations on items")
 
-# API for single item operations (GET, DELETE, PUT)
+# Routes for single item operations
 @blp.route("/item/<int:item_id>")
 class Item(MethodView):
-    # Retrieve an item by its ID
+    # Get an item by its ID (requires JWT)
     @jwt_required()
     @blp.response(200,ItemSchema)
     def get(self,item_id):
         item = ItemModel.query.get_or_404(item_id)
         return item
 
-    # Delete an item by its ID
+    # Delete an item by its ID (admin only, requires JWT)
     @jwt_required()
     def delete(self,item_id):
         jwt = get_jwt()
@@ -49,17 +49,16 @@ class Item(MethodView):
 
         return item
 
-
-# API for item collection operations (GET all, POST new)
+# Routes for item collection operations
 @blp.route("/item")
 class ItemList(MethodView):
-    # Retrieve all items
+    # Get all items (requires JWT)
     @jwt_required()
     @blp.response(200,ItemSchema(many=True))
     def get(self):
         return ItemModel.query.all()
 
-    # Create a new item
+    # Create a new item (requires JWT)
     @jwt_required()
     @blp.arguments(ItemSchema)
     @blp.response(201, ItemSchema)
@@ -69,7 +68,7 @@ class ItemList(MethodView):
         try:
             db.session.add(item)
             db.session.commit()
-            db.session.refresh(item)  # <-- Add this line
+            db.session.refresh(item)
         except SQLAlchemyError:
             abort(500, message="An error occurred while inserting the item.")
 

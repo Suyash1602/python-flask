@@ -1,10 +1,11 @@
 # Stores REST API
 
-A RESTful API for managing stores and items, built with Python Flask, Flask-Smorest, SQLAlchemy, and Marshmallow.
+A RESTful API for managing stores, items, tags, and users, built with Python Flask, Flask-Smorest, SQLAlchemy, and Marshmallow.
 
 ## Features
 
-- CRUD operations for stores and items
+- CRUD operations for stores, items, tags, and users
+- JWT authentication and admin privileges
 - Data validation using Marshmallow schemas
 - SQLAlchemy ORM for database management
 - Interactive API documentation via Swagger UI
@@ -15,15 +16,20 @@ A RESTful API for managing stores and items, built with Python Flask, Flask-Smor
 
 ```
 .
-├── app.py                # Main Flask app factory
+├── app.py                # Main Flask app factory (fully commented)
 ├── db.py                 # SQLAlchemy database instance
 ├── models/               # SQLAlchemy models
 │   ├── __init__.py
 │   ├── item.py
-│   └── store.py
-├── resources/            # API endpoints (blueprints)
-│   ├── item.py           # Item APIs (fully commented)
-│   └── store.py          # Store APIs (fully commented)
+│   ├── store.py
+│   ├── tag.py
+│   ├── item_tags.py
+│   └── user.py
+├── resources/            # API endpoints (blueprints, fully commented)
+│   ├── item.py
+│   ├── store.py
+│   ├── tag.py
+│   └── user.py
 ├── schemas.py            # Marshmallow schemas
 ├── requirements.txt      # Python dependencies
 ├── Dockerfile            # Docker image definition
@@ -86,6 +92,13 @@ Once running, visit [http://localhost:5000/swagger-ui](http://localhost:5000/swa
 - `GET /item/<item_id>` — Get an item by ID
 - `PUT /item/<item_id>` — Update an item by ID
 - `DELETE /item/<item_id>` — Delete an item by ID
+- `GET /tag/<tag_id>` — Get a tag by ID
+- `DELETE /tag/<tag_id>` — Delete a tag (if not assigned to any items)
+- `POST /register` — Register a new user
+- `POST /login` — Login and get JWT token
+- `POST /logout` — Logout and revoke JWT token
+- `GET /user/<user_id>` — Get a user by ID
+- `DELETE /user/<user_id>` — Delete a user by ID
 
 ## Example Payloads
 
@@ -107,9 +120,18 @@ Once running, visit [http://localhost:5000/swagger-ui](http://localhost:5000/swa
 }
 ```
 
+**Register User**
+
+```json
+{
+  "username": "testuser",
+  "password": "testpass"
+}
+```
+
 ## Code Documentation
 
-All API endpoints in [`resources/item.py`](resources/item.py) and [`resources/store.py`](resources/store.py) are now fully commented to explain their purpose and usage, making the codebase easier to understand and maintain.
+All API endpoints in [`resources/item.py`](resources/item.py), [`resources/store.py`](resources/store.py), [`resources/tag.py`](resources/tag.py), [`resources/user.py`](resources/user.py), and the main app in [`app.py`](app.py) are now fully commented to explain their purpose and usage, making the codebase easier to understand and maintain.
 
 ## Contributing
 

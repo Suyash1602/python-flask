@@ -3,19 +3,19 @@ from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError  # type: ignore
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from db import db
 from models import StoreModel
 from schemas import StoreSchema
 
-
+# Blueprint for store-related operations
 blp = Blueprint("Stores",__name__,description="Operations on stores")
 
-# API for single store operations (GET, DELETE)
+# Routes for single store operations
 @blp.route("/store/<int:store_id>")
 class Store(MethodView):
-    # Retrieve a store by its ID
+    # Get a store by its ID
     @blp.response(200,StoreSchema)
     def get(self,store_id):
         store = StoreModel.query.get_or_404(store_id)
@@ -28,10 +28,10 @@ class Store(MethodView):
         db.session.commit()
         return {"message":"Store deleted."}
         
-# API for store collection operations (GET all, POST new)
+# Routes for store collection operations
 @blp.route("/store")
 class StoreList(MethodView):
-    # Retrieve all stores
+    # Get all stores
     @blp.response(200,StoreSchema(many=True))
     def get(self):
         return StoreModel.query.all()
@@ -48,7 +48,7 @@ class StoreList(MethodView):
             db.session.refresh(store) 
         except IntegrityError:
             abort(400,message="A store with that name already exists.")
-        except SQLAlchemyError: # type: ignore
+        except SQLAlchemyError:
             abort(500,message="An error occurred while inserting the store.")
 
         return store

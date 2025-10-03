@@ -6,15 +6,19 @@ from db import db
 from models import TagModel,StoreModel,ItemModel
 from schemas import TagSchema,TagAndItemSchema
 
+# Blueprint for tag-related operations
 blp = Blueprint("Tags","tags",description="Operations on tags")
 
+# Routes for tags within a store
 @blp.route("/store/<int:store_id>/tag")
 class TagsInStore(MethodView):
+    # Get all tags for a store
     @blp.response(200,TagSchema(many=True))
     def get(self,store_id):
         store = StoreModel.query.get_or_404(store_id)
         return store.tags.all()
 
+    # Create a new tag for a store
     @blp.arguments(TagSchema)
     @blp.response(201,TagSchema)
     def post(self,tag_data,store_id):
@@ -28,10 +32,12 @@ class TagsInStore(MethodView):
         
         return tag
     
+# Routes for linking/unlinking tags to items
 @blp.route("/item/<int:item_id>/tag/<int:tag_id>")
 class LinkTagsToItem(MethodView):
-   @blp.response(201,TagSchema)
-   def post(self,item_id,tag_id):
+    # Link a tag to an item
+    @blp.response(201,TagSchema)
+    def post(self,item_id,tag_id):
         item = ItemModel.query.get_or_404(item_id)
         tag = TagModel.query.get_or_404(tag_id)
 
@@ -43,9 +49,10 @@ class LinkTagsToItem(MethodView):
             abort(500,message="An error occurred while linking tag to item.")
 
         return tag
-   
-   @blp.response(200,TagAndItemSchema)
-   def delete(self,item_id,tag_id):
+
+    # Remove a tag from an item
+    @blp.response(200,TagAndItemSchema)
+    def delete(self,item_id,tag_id):
         item = ItemModel.query.get_or_404(item_id)
         tag = TagModel.query.get_or_404(tag_id)
 
@@ -58,13 +65,16 @@ class LinkTagsToItem(MethodView):
         
         return {"message":"Item removed from tag","item":item,"tag":tag}
     
+# Routes for single tag operations
 @blp.route("/tag/<int:tag_id>")
 class Tag(MethodView):
+    # Get a tag by its ID
     @blp.response(200,TagSchema)
     def get(self,tag_id):
         tag = TagModel.query.get_or_404(tag_id)
         return tag
     
+    # Delete a tag if not assigned to any items
     @blp.response(202,description="Deletes a tag if no item is tagged with it.",example={"message":"Tag deleted."})
     @blp.alt_response(404,description="Tag not found.")
     @blp.alt_response(400,description="Returned if the tag is assigned to one or more items. In this case, the tag is not deleted.")
